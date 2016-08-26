@@ -1,0 +1,14 @@
+package zz.itcast.studentschedule.activity;
+
+import android.app.Activity;
+import android.os.Bundle;
+
+public class TestAct extends Activity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+
+
+        super.onCreate(savedInstanceState);
+    }
+}

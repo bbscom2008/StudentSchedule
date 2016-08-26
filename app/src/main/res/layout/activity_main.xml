@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:background="#ffffffff"
+    android:layout_height="match_parent"
+   >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#550000ff"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:gravity="center_vertical"
+            android:padding="8dp"
+            android:text="讲师助手"
+            android:textColor="#000000"
+            android:textSize="22sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="状态:"
+            android:id="@+id/tv_state"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:textSize="16sp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:text="检查更新"
+            android:id="@+id/btn_check_state"
+            android:layout_toLeftOf="@id/tv_state"
+            android:layout_height="wrap_content" />
+
+
+
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:id="@+id/ll_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+    </LinearLayout>
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#660000ff"
+        android:orientation="horizontal">
+
+
+        <RadioButton
+            android:id="@+id/btn_teacher"
+            style="@style/Main_TextView"
+            android:text="讲师" />
+
+        <RadioButton
+            android:id="@+id/btn_fudao"
+            style="@style/Main_TextView"
+            android:text="技术辅导" />
+
+        <RadioButton
+            android:id="@+id/btn_job"
+            style="@style/Main_TextView"
+            android:text="就业指导" />
+
+        <RadioButton
+            android:id="@+id/btn_other"
+            style="@style/Main_TextView"
+            android:text="其他" />
+    </RadioGroup>
+
+</LinearLayout>

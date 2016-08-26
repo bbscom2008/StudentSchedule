@@ -1,0 +1,35 @@
+apply plugin: 'com.android.application'
+
+android {
+    signingConfigs {
+        config {
+            storeFile file('D:/AndroidStudioProjects/kebiao.jks')
+            storePassword '123456789'
+        }
+    }
+    compileSdkVersion 23
+    buildToolsVersion "23.0.3"
+    defaultConfig {
+        applicationId "zz.itcast.studentschedule"
+        minSdkVersion 15
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.12'
+    compile files('libs/jxl-2.6.jar')
+    compile files('libs/commons-compress-1.12.jar')
+    compile 'com.android.support:support-v4:23.4.0'
+    compile 'com.squareup.okio:okio:1.9.0'
+    compile 'com.squareup.okhttp:okhttp:2.7.5'
+}
