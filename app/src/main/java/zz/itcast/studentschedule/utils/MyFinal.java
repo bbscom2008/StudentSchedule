@@ -1,19 +1,6 @@
 package zz.itcast.studentschedule.utils;
 
 import android.os.Environment;
-import android.text.format.Time;
-
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-
-import jxl.Cell;
-import jxl.CellType;
-import jxl.DateCell;
-import jxl.LabelCell;
-import jxl.Sheet;
-import jxl.Workbook;
-import zz.itcast.studentschedule.bean.SsBean;
 
 public class MyFinal {
 
@@ -32,13 +19,14 @@ public class MyFinal {
     /**
      * 课表文件的下载地址 ( 固定不变的)
      */
-    public static String versionUrl = "http://raw.githubusercontent.com/bbscom2008/zzitcast/master/version.json";
+    public static String versionUrl = "https://raw.githubusercontent.com/bbscom2008/zzitcast/master/version.json";
 
 
     /**
      * 课表文件的下载地址 ( 固定不变的)
+     *                               https://raw.githubusercontent.com/bbscom2008/zzitcast/master/android.zip
      */
-    public static String kebiaoUrl = "http://raw.githubusercontent.com/bbscom2008/zzitcast/master/android.zip";
+    public static String kebiaoUrl = "https://raw.githubusercontent.com/bbscom2008/zzitcast/master/android.zip";
 
     /**
      * 课表文件的本地地址( 固定不变的)
@@ -49,7 +37,7 @@ public class MyFinal {
     /**
      * APK下载地址 ( 固定不变的)
      */
-    public static String apkUrl = "http://raw.githubusercontent.com/bbscom2008/zzitcast/master/apk/app_kebiao.apk";
+    public static String apkUrl = "https://raw.githubusercontent.com/bbscom2008/zzitcast/master/apk/app_kebiao.apk";
 
     /**
      * APK文件本地地址 ( 固定不变的)

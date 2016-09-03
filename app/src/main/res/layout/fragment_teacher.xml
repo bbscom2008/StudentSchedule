@@ -8,6 +8,7 @@
 
     <TextView
         android:layout_width="wrap_content"
+        android:id="@+id/tv_desc"
         android:text="讲师上课时间统计:"
         android:layout_height="wrap_content" />
 

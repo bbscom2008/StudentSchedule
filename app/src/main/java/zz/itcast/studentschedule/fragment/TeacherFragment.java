@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -33,12 +34,23 @@ public class TeacherFragment extends Fragment  {
     private Button btnRest;
     private View view;
 
+    private TextView tv_desc;
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        fillData();
+
+        System.out.println("teacherFragment.onResume===========");
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_teacher,null);
 
-
+        System.out.println("onCreateView==========");
+        tv_desc = (TextView) view.findViewById(R.id.tv_desc);
 
         btnRest = (Button) view.findViewById(R.id.btn_rest);
         btnRest.setOnClickListener(new View.OnClickListener() {
@@ -56,7 +68,7 @@ public class TeacherFragment extends Fragment  {
 
         eDao = ExcelDao.getInstance(getActivity());
 
-        fillData();
+
 
         return view;
     }
@@ -66,8 +78,22 @@ public class TeacherFragment extends Fragment  {
 
         teacherList = eDao.getAllTeacher();
 
-        gridView.setAdapter(new MyAdapter());
+        if(teacherList.size() == 0){
+            tv_desc.setText("当前没有课表，请先更新!");
+            btnRest.setVisibility(View.GONE);
+            return ;
+        }else{
+            tv_desc.setText("讲师上课时间统计");
+            btnRest.setVisibility(View.VISIBLE);
+            gridView.setAdapter(new MyAdapter());
+        }
 
+
+    }
+
+    public void flushView() {
+        System.out.println("flushview=======");
+        fillData();
     }
 
 

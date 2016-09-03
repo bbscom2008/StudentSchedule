@@ -29,6 +29,7 @@ public class BaseActivity extends FragmentActivity{
 
         proDlg = new ProgressDialog(this);
         proDlg.setMessage("正在处理，请稍候...");
+        proDlg.setCancelable(false); // 不可取消
 
         sp = getSharedPreferences(MyFinal.sp_name, Context.MODE_PRIVATE);
 

@@ -59,10 +59,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
     private TextView tvState;
     private android.content.Context ctx;
 
-    /**
-     * 当前解压的xls 文件集合
-     */
-    private List<String> unZipNameList;
+    private TeacherFragment teacherFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,18 +78,14 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
 
         radioGroup.setOnCheckedChangeListener(this);
 
-        //  fragment 初始化
-        teacherFragment = new TeacherFragment();
-        fudaoFragment = new FudaoFragment();
-        jobFragment = new JobFragment();
-        otherFragment = new OtherFragment();
+
 
         // 如果有文件，那么，显示第一个页面
-        String androidPath = Environment.getExternalStorageDirectory().getAbsolutePath()+"/me/android";
-        File myFolder = new File(androidPath);
-        if (myFolder.exists()) {
+//        String androidPath = Environment.getExternalStorageDirectory().getAbsolutePath()+"/me/android";
+//        File myFolder = new File(androidPath);
+//        if (myFolder.exists()) {
             radioGroup.check(R.id.btn_teacher);
-        }
+//        }
 
         if(isHaveNet()){
             // 后台检查更新课表
@@ -147,17 +140,23 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                HttpUtils.getInstance().downloadFile(MyFinal.apkUrl, MyFinal.apkFilePath, new HttpUtils.ResultCallback<File>() {
-                    @Override
-                    public void onResponse(File apkFile) {
+//                HttpUtils.getInstance().downloadFile(MyFinal.apkUrl, MyFinal.apkFilePath, new HttpUtils.ResultCallback<File>() {
+//                    @Override
+//                    public void onResponse(File apkFile) {
+//
+//                        Intent intent = new Intent("android.intent.action.VIEW");
+//                        intent.addCategory(Intent.CATEGORY_DEFAULT);
+//                        intent.setDataAndType(Uri.fromFile(apkFile),"application/vnd.android.package-archive");
+//
+//                        startActivity(intent);
+//                    }
+//                });
 
-                        Intent intent = new Intent("android.intent.action.VIEW");
-                        intent.addCategory(Intent.CATEGORY_DEFAULT);
-                        intent.setDataAndType(Uri.fromFile(apkFile),"application/vnd.android.package-archive");
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(MyFinal.apkUrl));
+                startActivity(intent);
 
-                        startActivity(intent);
-                    }
-                });
             }
         });
         adb.setPositiveButton("取消",null);
@@ -165,39 +164,27 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
 
     }
 
-
-    private TeacherFragment teacherFragment;
-
-    private FudaoFragment fudaoFragment;
-
-    private JobFragment jobFragment;
-
-    private OtherFragment otherFragment;
-
-
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
 
-        FragmentManager manager =       getSupportFragmentManager();
-
+        FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
-
         switch (checkedId) {
             case R.id.btn_teacher:
-
+                teacherFragment = new TeacherFragment();
                 transaction.replace(R.id.ll_content, teacherFragment);
                 break;
 
             case R.id.btn_fudao:
-                transaction.replace(R.id.ll_content, fudaoFragment);
+                transaction.replace(R.id.ll_content,  new FudaoFragment());
                 break;
 
             case R.id.btn_job:
-                transaction.replace(R.id.ll_content, jobFragment);
+                transaction.replace(R.id.ll_content,  new JobFragment());
                 break;
 
             case R.id.btn_other:
-                transaction.replace(R.id.ll_content, otherFragment);
+                transaction.replace(R.id.ll_content,  new OtherFragment());
                 break;
         }
 
@@ -215,7 +202,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
         }
 
         isBtnCheck = true;
-        showProgress();
+        showProgressMessage("正在处理...");
         updateVersion();
     }
 
@@ -223,10 +210,9 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
         // 判断是否需要更新
         if(checkDataVersion()){
             showToast("课表已经是最新的，无需更新");
+            hideProgress();
             return ;
         }
-
-
 
         new Thread(){
             @Override
@@ -256,21 +242,20 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                         showProgressMessage("下载完成,正在解压文件");
                         try {
                             // 解压至同级目录
-                            unZipNameList = ZipUtil.unzip(file.getAbsolutePath(), null);
+                            List<String> unZipNameList = ZipUtil.unzip(file.getAbsolutePath(), null);
 
                             LogUtils.logleo("解压完成");
+
+                        // 解析
+                        parseXmlToDb(unZipNameList);
+
+                        // 更新页面
+                        handler.sendEmptyMessage(UPDATE_FINISH);
 
                         } catch (IOException e) {
                             // 如 SD 卡不存在
                             e.printStackTrace();
                         }
-
-                        // 解析
-                        parseXmlToDb();
-
-                        // 更新页面
-                        handler.sendEmptyMessage(UPDATE_FINISH);
-
                     }
 
                     @Override
@@ -307,7 +292,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
             switch (msg.what) {
                 case UPDATE_FINISH:
 
-                    radioGroup.check(R.id.btn_teacher);
+                    teacherFragment.flushView();
 
                     hideProgress();
                     // 保存版本号与服务器一致
@@ -333,19 +318,18 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                         if (!checkDataVersion()) {
                             btnCheckState.setText("课表有更新");
                             btnCheckState.setTextColor(Color.RED);
-                            // 右边一个小红点
-                            btnCheckState.setCompoundDrawables(null, null, getResources().getDrawable(R.drawable.red_point), null);
 
                             boolean isAutoUpdate = sp.getBoolean(MyFinal.key_auto_update,false);
                             if(isBtnCheck || isAutoUpdate){
                                 isBtnCheck = false; // 用了一次关闭开关
-                                // 如果是手工点击按钮更新，则更新课表
+                                // 如果是手工点击按钮,或自动更新，则更新课表
                                 updateKebiao();
                             }
-                            return;
-                        }
-                        showToast("当前课表是最新版本");
 
+                        }else{
+                            showToast("当前课表是最新版本");
+                            hideProgress();
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -371,9 +355,11 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
     }
 
 
-
-
-    private void parseXmlToDb() {
+    /**
+     * 参数为 解压的文件名称
+     * @param unZipNameList
+     */
+    private void parseXmlToDb(List<String> unZipNameList) {
         try {
             // android 课表所在目录
             String androidPath = Environment.getExternalStorageDirectory().getAbsolutePath()+"/me/android";
@@ -388,14 +374,22 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
 
             List<File> xlsFiles  = new ArrayList<File>();
 
-            for (File file : myFolder.listFiles()) {
-                String fileName = file.getName(); // 文件名本身是 BGK 编码 ，但该方法 返回的是UTF-8 的字符
-                if ((fileName.contains("android") || fileName.contains("Android")
-                        || fileName.contains("java")|| fileName.contains("Java"))
-                        && fileName.endsWith(".xls")) {
-                    // 有符合条件的文件，加入集合
-                    xlsFiles.add(file);
-                }
+            // 偏历所有文件
+//            for (File file : myFolder.listFiles()) {
+//                String fileName = file.getName(); // 文件名本身是 BGK 编码 ，但该方法 返回的是UTF-8 的字符
+//                if ((fileName.contains("android") || fileName.contains("Android")
+//                        || fileName.contains("java")|| fileName.contains("Java"))
+//                        && fileName.endsWith(".xls")) {
+//                    // 根据文件名称判断，符合条件，
+//                    xlsFiles.add(file);
+//                }
+//            }
+
+            // 解析当前下载的文件
+            File dir = new File(androidPath);
+            for(String name : unZipNameList){
+                File xlsFile = new File(dir,name);
+                xlsFiles.add(xlsFile);
             }
 
             // 解析XLS 文件

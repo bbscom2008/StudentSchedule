@@ -1,8 +1,8 @@
 package zz.itcast.studentschedule.activity;
 
 import android.appwidget.AppWidgetManager;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +17,7 @@ import zz.itcast.studentschedule.R;
 import zz.itcast.studentschedule.bean.SsBean;
 
 /**
- * 显示某个班级的课表
+ * 显示某个班级的课表,课表详情页面
  */
 public class KeBiaoActivity extends BaseActivity {
 
@@ -134,10 +134,10 @@ public class KeBiaoActivity extends BaseActivity {
 
             SsBean  bean= beanList.get(position);
 
-            StringBuffer content = new StringBuffer(bean.dateStr+" \t\t"+bean.week+" \t\t");
-
-            content.append(TextUtils.isEmpty(bean.teacher)?"\t\t\t\t\t\t":bean.teacher);
-            content.append("\t\t"+bean.content);
+//            StringBuffer content = new StringBuffer(bean.dateStr+" \t\t"+bean.week+" \t\t");
+//
+//            content.append(TextUtils.isEmpty(bean.teacher)?"\t\t\t\t\t\t":bean.teacher);
+//            content.append("\t\t"+bean.content);
 
 //            tvKeBiao.setText(content);
 
@@ -146,6 +146,11 @@ public class KeBiaoActivity extends BaseActivity {
             vh.tvWeek.setText(bean.week);
             vh.tvTeacher.setText(bean.teacher);
             vh.tvContent.setText(bean.content);
+            if(bean.content.contains("假期") || bean.content.contains("放假")){
+                vh.tvContent.setTextColor(Color.RED);
+            }else{
+                vh.tvContent.setTextColor(Color.BLACK);
+            }
 
 
 

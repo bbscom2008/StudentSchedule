@@ -14,7 +14,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.GridView;
-import android.widget.LinearLayout;
 
 import java.util.List;
 
@@ -47,6 +46,8 @@ public class OtherFragment extends Fragment {
         }
     };
 
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -68,26 +69,6 @@ public class OtherFragment extends Fragment {
 
         myAdapter = new MyAdapter();
         gridView.setAdapter(myAdapter);
-
-
-//        for (String msg:gradeList ) {
-////            System.out.println("msg:"+msg);
-//            Button btn_grade = new Button(getActivity());
-//            btn_grade.setText(msg);
-//
-//            llTimeTable.addView(btn_grade);
-//
-//            btn_grade.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//
-//
-//
-//                }
-//            });
-//        }
-
-
 
         return view;
     }

@@ -18,6 +18,11 @@
         android:layout_weight="1"
         android:numColumns="3"></GridView>
 
+    <View
+        android:layout_width="match_parent"
+        android:background="#aaa"
+        android:layout_margin="3dp"
+        android:layout_height="1dp"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -36,6 +41,16 @@
             android:layout_height="wrap_content" />
 
     </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:background="#aaa"
+        android:layout_margin="3dp"
+        android:layout_height="1dp"/>
 
+ <!--   <Button
+        android:layout_width="wrap_content"
+        android:text="下载所有课表"
+        android:id="@+id/btn_all_kebiao"
+        android:layout_height="wrap_content" />-->
 
 </LinearLayout>
