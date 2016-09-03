@@ -1,13 +1,8 @@
 package zz.itcast.studentschedule.utils;
 
-import android.text.TextUtils;
-import android.text.format.DateUtils;
 import android.text.format.Time;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,11 +10,9 @@ import jxl.Cell;
 import jxl.CellType;
 import jxl.DateCell;
 import jxl.LabelCell;
-import jxl.NumberCell;
 import jxl.Sheet;
 import jxl.Workbook;
 import zz.itcast.studentschedule.bean.SsBean;
-import zz.itcast.studentschedule.db.ExcelDao;
 
 public class MyUtils {
 
@@ -249,4 +242,14 @@ public class MyUtils {
 
         return weekStr;
     }
+
+    /**
+     * 返回当前时间
+     * @return
+     */
+    public static String now(){
+        return java.text.DateFormat.getTimeInstance().format(System.currentTimeMillis());
+
+    }
+
 }

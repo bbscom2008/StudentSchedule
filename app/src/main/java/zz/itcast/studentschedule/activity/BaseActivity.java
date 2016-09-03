@@ -3,6 +3,8 @@ package zz.itcast.studentschedule.activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.widget.Button;
@@ -87,11 +89,6 @@ public class BaseActivity extends FragmentActivity{
 
         btnCheckState = (Button) findViewById(R.id.btn_check_state);
 
-
-
-
-
-
     }
 
     public TextView tvTitle;
@@ -100,5 +97,20 @@ public class BaseActivity extends FragmentActivity{
 
     public Button btnCheckState;
 
+
+    public boolean isHaveNet(){
+
+        ConnectivityManager service = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo info = service.getActiveNetworkInfo();
+
+        if(info == null){ // 无网络
+            return false;
+        }else{
+            return true;
+        }
+
+
+    }
 
 }

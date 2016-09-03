@@ -3,11 +3,15 @@ package zz.itcast.studentschedule;
 import android.text.format.Time;
 
 import org.junit.Test;
-import org.junit.runner.manipulation.Filter;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.SocketAddress;
 
 /**
  * To work on unit tests, switch the Test Artifact in the Build Variants view.
@@ -27,9 +31,34 @@ public class ExampleUnitTest {
 //        String str = sdf.format(date);
 //        System.out.println(str);
 
+    }
+
+    @Test
+    public void testSocketTimeout(){
+
+        try {
+            Socket socket = new Socket();
+
+
+//            SocketAddress reAdd = new InetSocketAddress("318.118.118.8",80);
+            SocketAddress reAdd = new InetSocketAddress("127.0.0.1",8080);
+            socket.connect(reAdd,10000);
+
+            OutputStream outputStream = socket.getOutputStream();
+            InputStream inputStream = socket.getInputStream();
+
+            byte[] buffer = new byte[10240];
+            int read = inputStream.read(buffer);
+
+            String str = new String(buffer, 0, read);
+            System.out.println(str);
 
 
 
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 

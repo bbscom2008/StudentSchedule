@@ -25,17 +25,26 @@ import zz.itcast.studentschedule.app.MyApp;
 
 public class HttpUtils {
 
+
     private static HttpUtils mInstance;
 
     private OkHttpClient mOkHttpClient;
 
     private static Handler handler;
 
+    /**
+     * 超时时间
+     */
+    private static  final int TIME_OUT = 5000;
+
+    private static final int CHECK_TIME_OUT = TIME_OUT+1;
+
     private HttpUtils() {
 
         mOkHttpClient = new OkHttpClient();
-        mOkHttpClient.setConnectTimeout(5, TimeUnit.SECONDS); // 5秒超时
-        mOkHttpClient.setReadTimeout(5, TimeUnit.SECONDS); // 5秒超时
+        mOkHttpClient.setConnectTimeout(TIME_OUT, TimeUnit.MILLISECONDS); // 5秒超时
+        mOkHttpClient.setReadTimeout(TIME_OUT, TimeUnit.MILLISECONDS); // 5秒超时
+        mOkHttpClient.setWriteTimeout(TIME_OUT,TimeUnit.MILLISECONDS);
 
 //        mOkHttpClient.setCookieHandler(new CookieManager(null,
 //                CookiePolicy.ACCEPT_ORIGINAL_SERVER));
@@ -49,6 +58,19 @@ public class HttpUtils {
                     case SHOW_TOAST:
                         String s = (String) msg.obj;
                         Toast.makeText(MyApp.app, s, Toast.LENGTH_LONG).show();
+                        break;
+                    case CHECK_TIME_OUT:
+
+                        Holder holder = (Holder) msg.obj;
+
+                        if( holder.call.isCanceled()){
+                            return ;
+                        }else{
+                            holder.call.cancel();
+                            holder.callback.onError(null,new RuntimeException("联网超时了!!"));
+                        }
+
+
                         break;
                 }
 
@@ -82,23 +104,50 @@ public class HttpUtils {
      */
     public void get(String url, final ResultCallback<String> callback) {
 
+        System.out.println("开始联网:"+MyUtils.now());
         Request request = new Request.Builder().url(url).build();
 
         Call call = mOkHttpClient.newCall(request);
+
+        checkTimeOut(call,callback);
 
         call.enqueue(new Callback() {
 
             @Override
             public void onResponse(Response response) throws IOException {
+                handler.removeMessages(CHECK_TIME_OUT);
+                System.out.println("联网结束:"+MyUtils.now());
                 callback.onResponse(response.body().string());
             }
 
             @Override
             public void onFailure(Request request, IOException e) {
+                handler.removeMessages(CHECK_TIME_OUT);
                 callback.onError(request, e);
             }
         });
 
+    }
+
+    /**
+     * 判断是否发生联网超时
+     * @param call
+     * @param callback
+     */
+    private void checkTimeOut(final Call call, final ResultCallback<String> callback) {
+
+        Holder holder = new Holder();
+        holder.call = call;
+        holder.callback = callback;
+        Message msg = Message.obtain();
+        msg.what = CHECK_TIME_OUT;
+        msg.obj = holder;
+        handler.sendMessageDelayed(msg,TIME_OUT+5000);
+    }
+
+    private static class Holder{
+        Call call;
+        ResultCallback<String> callback;
     }
 
     /**
@@ -196,6 +245,7 @@ public class HttpUtils {
         public void onError(Request request, Exception e) {
             e.printStackTrace();
             // 出错了
+            System.out.println("联网失败："+MyUtils.now());
             showToast("联网失败，请稍后重试:" + e.getMessage());
 
         }

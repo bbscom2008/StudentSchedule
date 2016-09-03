@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,12 +12,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.okhttp.Request;
@@ -63,6 +59,11 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
     private TextView tvState;
     private android.content.Context ctx;
 
+    /**
+     * 当前解压的xls 文件集合
+     */
+    private List<String> unZipNameList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,9 +94,10 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
             radioGroup.check(R.id.btn_teacher);
         }
 
-        // 后台检查更新课表
-        updateVersion();
-
+        if(isHaveNet()){
+            // 后台检查更新课表
+            updateVersion();
+        }
     }
 
     /**
@@ -207,10 +209,13 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
     @Override
     public void onClick(View v) {
 
+        if(!isHaveNet()){
+           showToast("当前没有网络，请检查后重试!");
+            return  ;
+        }
+
         isBtnCheck = true;
-
         showProgress();
-
         updateVersion();
     }
 
@@ -251,7 +256,8 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                         showProgressMessage("下载完成,正在解压文件");
                         try {
                             // 解压至同级目录
-                            ZipUtil.unzip(file.getAbsolutePath(), null);
+                            unZipNameList = ZipUtil.unzip(file.getAbsolutePath(), null);
+
                             LogUtils.logleo("解压完成");
 
                         } catch (IOException e) {
@@ -317,6 +323,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                     try {
                         info = getPackageManager().getPackageInfo(getPackageName(), 0);
 
+                        // 如果版本不一样，就提示更新
                         if (version.apk_version != info.versionCode) {
                             hideProgress();
                             showUpdateDialog();
@@ -331,14 +338,12 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
 
                             boolean isAutoUpdate = sp.getBoolean(MyFinal.key_auto_update,false);
                             if(isBtnCheck || isAutoUpdate){
+                                isBtnCheck = false; // 用了一次关闭开关
                                 // 如果是手工点击按钮更新，则更新课表
                                 updateKebiao();
                             }
                             return;
                         }
-
-
-
                         showToast("当前课表是最新版本");
 
                     } catch (Exception e) {

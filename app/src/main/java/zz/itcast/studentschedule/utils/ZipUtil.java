@@ -11,8 +11,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -147,12 +148,16 @@ public class ZipUtil {
      *            zip文件路径
      * @param targetPath
      *            解压缩到的位置，如果为null或空字符串则默认解压缩到跟zip包同目录跟zip包同名的文件夹下
+     * @return 文件名称的集合
      */
-    public static void unzip(String zipFilePath, String targetPath)
+    public static List<String> unzip(String zipFilePath, String targetPath)
             throws IOException {
         OutputStream os = null;
         InputStream is = null;
         ZipFile zipFile = null;
+
+        List<String> nameList = new ArrayList<String>();
+
         try {
             zipFile = new ZipFile(zipFilePath,"GBK");
 
@@ -181,7 +186,7 @@ public class ZipUtil {
                     if (zipEntry.getSize() > 0) {
                         // 文件
                         String fileName = zipEntry.getName();
-
+                        nameList.add(fileName);
                         System.out.println("====fileName:"+fileName);
 
                         File targetFile = FileUtil.buildFile(directoryPath
@@ -220,5 +225,7 @@ public class ZipUtil {
                 os.close();
             }
         }
+
+        return nameList;
     }
 }
