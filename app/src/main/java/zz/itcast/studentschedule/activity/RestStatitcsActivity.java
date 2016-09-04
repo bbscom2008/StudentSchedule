@@ -52,6 +52,7 @@ public class RestStatitcsActivity extends BaseActivity {
 
         // 处理标题
         tvTitle.setText("休息日统计");
+        getActionBar().setTitle("休息日统计");
         btnCheckState.setVisibility(View.GONE);
         tvState.setVisibility(View.GONE);
 

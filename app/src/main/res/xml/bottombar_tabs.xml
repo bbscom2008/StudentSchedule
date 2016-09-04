@@ -1,0 +1,32 @@
+<tabs>
+    <tab
+        activeColor="#FFFFFF"
+        badgeBackgroundColor="#FF0000"
+        barColorWhenSelected="#5E3F35"
+        icon="@drawable/ic_group_jiangshi"
+
+        id="@+id/tab_jiangshi"
+        inActiveColor="#CBA8DC"
+        title="讲师" />
+    <tab  activeColor="#FFFFFF"
+        badgeBackgroundColor="#FF0000"
+        barColorWhenSelected="#ea6f4a"
+        icon="@drawable/ic_group_jishufudao"
+        id="@+id/tab_jishufudao"
+        inActiveColor="#CBA8DC"
+        title="技术辅导" />
+    <tab
+        badgeBackgroundColor="#FF0000" activeColor="#FFFFFF"
+        barColorWhenSelected="#FF5381"
+        icon="@drawable/ic_group_jiuyezhidao"
+        id="@+id/tab_jiuyezhidao"
+        inActiveColor="#CBA8DC"
+        title="就业指导" />
+    <tab
+        badgeBackgroundColor="#FF0000"
+        barColorWhenSelected="#7F2DA4" activeColor="#FFFFFF"
+        icon="@drawable/ic_group_other"
+        id="@+id/tab_qita"
+        inActiveColor="#CBA8DC"
+        title="其它" />
+</tabs>

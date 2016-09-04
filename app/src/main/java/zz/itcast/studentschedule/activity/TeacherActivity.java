@@ -39,6 +39,7 @@ public class TeacherActivity extends BaseActivity {
             throw new RuntimeException("没有传老师的姓名");
         }
 
+        getActionBar().setTitle(teacher);
 
         listView = (ListView) findViewById(R.id.listView);
         tvState = (TextView) findViewById(R.id.tv_state);

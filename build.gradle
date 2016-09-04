@@ -21,3 +21,13 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+//定义常用版本
+ext{
+    minSdkVersion = 10
+    targetSdkVersion = 22
+    compileSdkVersion = 23
+    buildToolsVersion = '23.0.3'
+
+    bottombarVersion = '2.0.2'
+}

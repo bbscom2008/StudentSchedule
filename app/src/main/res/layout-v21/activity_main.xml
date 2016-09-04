@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:background="#ffffffff"
     android:layout_height="match_parent"
-   >
+    android:background="#ffffffff"
+    android:orientation="vertical">
 
     <RelativeLayout
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#550000ff"
-        >
+        android:visibility="gone">
 
         <TextView
             android:layout_width="wrap_content"
@@ -24,21 +23,20 @@
             android:textSize="22sp" />
 
         <TextView
+            android:id="@+id/tv_state"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="状态:"
-            android:id="@+id/tv_state"
-            android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:text="状态:"
             android:textSize="16sp" />
 
         <Button
-            android:layout_width="wrap_content"
-            android:text="检查更新"
             android:id="@+id/btn_check_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_toLeftOf="@id/tv_state"
-            android:layout_height="wrap_content" />
-
+            android:text="检查更新" />
 
 
     </RelativeLayout>
@@ -54,12 +52,12 @@
     </LinearLayout>
 
     <RadioGroup
-
         android:id="@+id/radioGroup"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="#660000ff"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
 
 
         <RadioButton
@@ -83,4 +81,12 @@
             android:text="其他" />
     </RadioGroup>
 
+    <com.roughike.bottombar.BottomBar
+        android:id="@+id/bottomBar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        app:bb_inActiveTabColor="#222222"
+        app:bb_showShadow="true"
+        android:layout_alignParentBottom="true"
+        app:bb_tabXmlResource="@xml/bottombar_tabs" />
 </LinearLayout>
