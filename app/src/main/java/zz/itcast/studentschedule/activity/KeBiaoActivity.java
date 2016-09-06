@@ -41,6 +41,7 @@ public class KeBiaoActivity extends BaseActivity {
             throw new RuntimeException("没有带班级信息!!");
         }
         tvGrade.setText(grade);
+getActionBar().setTitle(grade);
 
         fillData();
 

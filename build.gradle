@@ -5,7 +5,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.2'
+        classpath 'com.android.tools.build:gradle:2.1.0'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -20,4 +20,14 @@ allprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+//定义常用版本
+ext{
+    minSdkVersion = 10
+    targetSdkVersion = 22
+    compileSdkVersion = 23
+    buildToolsVersion = '23.0.3'
+
+    bottombarVersion = '2.0.2'
 }

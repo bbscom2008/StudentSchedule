@@ -11,9 +11,13 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -21,6 +25,8 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.roughike.bottombar.BottomBar;
+import com.roughike.bottombar.OnTabSelectListener;
 import com.squareup.okhttp.Request;
 
 import org.json.JSONObject;
@@ -62,6 +68,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
 
     private TextView tvState;
     private android.content.Context ctx;
+    private BottomBar bottomBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +83,10 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
         btnCheckState.setOnClickListener(this);
         btnCheckState.setText("检查更新");
 
+
         tvState = (TextView) findViewById(R.id.tv_state);
+        bottomBar = (BottomBar) findViewById(R.id.bottomBar);
+
 
         radioGroup.setOnCheckedChangeListener(this);
 
@@ -87,15 +97,48 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
         otherFragment = new OtherFragment();
 
         // 如果有文件，那么，显示第一个页面
-        String androidPath = Environment.getExternalStorageDirectory().getAbsolutePath()+"/me/android";
+        String androidPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/me/android";
         File myFolder = new File(androidPath);
         if (myFolder.exists()) {
             radioGroup.check(R.id.btn_teacher);
+            setupWithBottomBar(bottomBar);
         }
 
         // 后台检查更新课表
         updateVersion();
 
+    }
+
+    private void setupWithBottomBar(@NonNull BottomBar bottomBar) {
+        bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
+            @Override
+            public void onTabSelected(@IdRes int tabId) {
+                FragmentManager manager = getSupportFragmentManager();
+
+                FragmentTransaction transaction = manager.beginTransaction();
+
+                switch (tabId) {
+                    case R.id.tab_jiangshi:
+
+                        transaction.replace(R.id.ll_content, teacherFragment);
+                        break;
+
+                    case R.id.tab_jishufudao:
+                        transaction.replace(R.id.ll_content, fudaoFragment);
+                        break;
+
+                    case R.id.tab_jiuyezhidao:
+                        transaction.replace(R.id.ll_content, jobFragment);
+                        break;
+
+                    case R.id.tab_qita:
+                        transaction.replace(R.id.ll_content, otherFragment);
+                        break;
+                }
+
+                transaction.commit();
+            }
+        });
     }
 
     /**
@@ -109,7 +152,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
 
                 try {
 
-                    LogUtils.logleo("json:"+response);
+                    LogUtils.logleo("json:" + response);
 
                     JSONObject jObj = new JSONObject(response);
                     version = new Version();
@@ -127,7 +170,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
             @Override
             public void onError(Request request, Exception e) {
                 super.onError(request, e);
-                if(isBtnCheck){ // 点击按钮更新
+                if (isBtnCheck) { // 点击按钮更新
                     isBtnCheck = false;
                     //TODO
                     hideProgress();
@@ -151,14 +194,14 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
 
                         Intent intent = new Intent("android.intent.action.VIEW");
                         intent.addCategory(Intent.CATEGORY_DEFAULT);
-                        intent.setDataAndType(Uri.fromFile(apkFile),"application/vnd.android.package-archive");
+                        intent.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive");
 
                         startActivity(intent);
                     }
                 });
             }
         });
-        adb.setPositiveButton("取消",null);
+        adb.setPositiveButton("取消", null);
         adb.show();
 
     }
@@ -176,7 +219,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
 
-        FragmentManager manager =       getSupportFragmentManager();
+        FragmentManager manager = getSupportFragmentManager();
 
         FragmentTransaction transaction = manager.beginTransaction();
 
@@ -202,7 +245,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
         transaction.commit();
     }
 
-    private boolean isBtnCheck ;
+    private boolean isBtnCheck;
 
     @Override
     public void onClick(View v) {
@@ -214,16 +257,36 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
         updateVersion();
     }
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        menu.add(0, 0, 0, getString(R.string.action_check_update));
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == 0) {
+            isBtnCheck = true;
+
+            showProgress();
+
+            updateVersion();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void updateKebiao() {
         // 判断是否需要更新
-        if(checkDataVersion()){
+        if (checkDataVersion()) {
             showToast("课表已经是最新的，无需更新");
-            return ;
+            return;
         }
 
 
-
-        new Thread(){
+        new Thread() {
             @Override
             public void run() {
                 super.run();
@@ -236,7 +299,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                 showProgressMessage("正在下载文件");
 
                 File workFile = new File(MyFinal.workDir);
-                if(!workFile.exists()){
+                if (!workFile.exists()) {
                     workFile.mkdirs();
                 }
                 // 下载文件
@@ -245,7 +308,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                     @Override
                     public void onResponse(File file) {
 
-                        System.out.println("file::"+file.getAbsolutePath());
+                        System.out.println("file::" + file.getAbsolutePath());
 
                         LogUtils.logleo("下载完成");
                         showProgressMessage("下载完成,正在解压文件");
@@ -281,13 +344,12 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
     }
 
 
-
     private final int CHECK_UPDATE = 111;
 
     /**
      * 更新完成
      */
-    private final int UPDATE_FINISH = CHECK_UPDATE+1;
+    private final int UPDATE_FINISH = CHECK_UPDATE + 1;
 
     /**
      * 版本信息
@@ -305,7 +367,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
 
                     hideProgress();
                     // 保存版本号与服务器一致
-                    sp.edit().putInt(MyFinal.key_data_version,version.data_version).commit();
+                    sp.edit().putInt(MyFinal.key_data_version, version.data_version).commit();
                     //
                     btnCheckState.setText("检查更新");
                     btnCheckState.setTextColor(0xff000000);
@@ -329,14 +391,13 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                             // 右边一个小红点
                             btnCheckState.setCompoundDrawables(null, null, getResources().getDrawable(R.drawable.red_point), null);
 
-                            boolean isAutoUpdate = sp.getBoolean(MyFinal.key_auto_update,false);
-                            if(isBtnCheck || isAutoUpdate){
+                            boolean isAutoUpdate = sp.getBoolean(MyFinal.key_auto_update, false);
+                            if (isBtnCheck || isAutoUpdate) {
                                 // 如果是手工点击按钮更新，则更新课表
                                 updateKebiao();
                             }
                             return;
                         }
-
 
 
                         showToast("当前课表是最新版本");
@@ -352,6 +413,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
 
     /**
      * 检查数据版本是否是最新
+     *
      * @return true 和服务器一致
      */
     private boolean checkDataVersion() {
@@ -366,12 +428,10 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
     }
 
 
-
-
     private void parseXmlToDb() {
         try {
             // android 课表所在目录
-            String androidPath = Environment.getExternalStorageDirectory().getAbsolutePath()+"/me/android";
+            String androidPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/me/android";
 
             File myFolder = new File(androidPath);
             if (!myFolder.exists()) {
@@ -381,12 +441,12 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
 
             eDao.createNewDb();// 创建新的数据库
 
-            List<File> xlsFiles  = new ArrayList<File>();
+            List<File> xlsFiles = new ArrayList<File>();
 
             for (File file : myFolder.listFiles()) {
                 String fileName = file.getName(); // 文件名本身是 BGK 编码 ，但该方法 返回的是UTF-8 的字符
                 if ((fileName.contains("android") || fileName.contains("Android")
-                        || fileName.contains("java")|| fileName.contains("Java"))
+                        || fileName.contains("java") || fileName.contains("Java"))
                         && fileName.endsWith(".xls")) {
                     // 有符合条件的文件，加入集合
                     xlsFiles.add(file);
@@ -394,9 +454,9 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
             }
 
             // 解析XLS 文件
-            for(int i=0;i<xlsFiles.size();i++){
+            for (int i = 0; i < xlsFiles.size(); i++) {
 
-                showProgressMessage("正在解析文件,共"+xlsFiles.size()+"个，当前解析第:"+(i+1)+"个");
+                showProgressMessage("正在解析文件,共" + xlsFiles.size() + "个，当前解析第:" + (i + 1) + "个");
 
                 File file = xlsFiles.get(i);
                 String fileName = file.getName();
