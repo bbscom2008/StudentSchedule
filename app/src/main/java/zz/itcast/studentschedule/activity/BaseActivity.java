@@ -18,7 +18,6 @@ import zz.itcast.studentschedule.utils.MyFinal;
 public class BaseActivity extends FragmentActivity{
 
     protected ExcelDao eDao;
-
     protected SharedPreferences sp;
 
     @Override
@@ -84,18 +83,11 @@ public class BaseActivity extends FragmentActivity{
 
         tvTitle = (TextView) findViewById(R.id.tv_title);
         tvState = (TextView) findViewById(R.id.tv_state);
-
         btnCheckState = (Button) findViewById(R.id.btn_check_state);
-
-
-        btnCheckState = (Button) findViewById(R.id.btn_check_state);
-
     }
 
     public TextView tvTitle;
-
     public TextView tvState;
-
     public Button btnCheckState;
 
 

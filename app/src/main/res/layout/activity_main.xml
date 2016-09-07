@@ -6,41 +6,8 @@
     android:layout_height="match_parent"
    >
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#550000ff"
-        >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            android:gravity="center_vertical"
-            android:padding="8dp"
-            android:text="讲师助手"
-            android:textColor="#000000"
-            android:textSize="22sp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="状态:"
-            android:id="@+id/tv_state"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:textSize="16sp" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:text="检查更新"
-            android:id="@+id/btn_check_state"
-            android:layout_toLeftOf="@id/tv_state"
-            android:layout_height="wrap_content" />
-
-
-
-    </RelativeLayout>
+    <include
+        layout="@layout/layout_title"/>
 
 
     <LinearLayout

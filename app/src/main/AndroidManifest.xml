@@ -27,6 +27,7 @@
         <activity android:name=".activity.RestStatitcsActivity" />
 
         <activity android:name=".activity.TestAct"></activity>
+        <activity android:name=".activity.TodayKebiaoActivity"></activity>
     </application>
 
 </manifest>

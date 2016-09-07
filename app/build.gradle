@@ -14,7 +14,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 22
         versionCode 2
-        versionName "1.2.0完善版"
+        versionName "1.2.1完善版"
     }
 
     buildTypes {

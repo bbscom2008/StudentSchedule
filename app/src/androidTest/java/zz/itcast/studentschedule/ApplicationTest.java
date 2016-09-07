@@ -1,27 +1,14 @@
 package zz.itcast.studentschedule;
 
 import android.app.Application;
-import android.app.DownloadManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
 import android.test.ApplicationTestCase;
 import android.text.format.Time;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Headers;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
-import zz.itcast.studentschedule.utils.StreamUtils;
+import zz.itcast.studentschedule.db.ExcelDao;
 
 /**
  * <a href="http://d.android.com/tools/testing/testing_android.html">Testing Fundamentals</a>
@@ -48,6 +35,16 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 //        testSDFile();
 
     }
+
+    public void testDate(){
+
+        ExcelDao eDao = ExcelDao.getInstance(getContext());
+
+        eDao.test();
+
+    }
+
+
 
     public void testDb(){
 
@@ -104,52 +101,52 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
     /**
      * 测试 head 请求，获得文件大小
      */
-    public void testHead(){
-
-        // http://raw.githubusercontent.com/bbscom2008/zzitcast/master/andoid.rar
-
-        OkHttpClient okHttpClient = new OkHttpClient();
-
-//        String url = "http://raw.githubusercontent.com/bbscom2008/zzitcast/master/andoid.rar";
-
-        String url = "https://github.com/bbscom2008/yygame/tree/master/res";
-
-        Request request = new Request.Builder()
-                .url(url)
-                .method("GET",null)
-                .build();
-
-        Call call = okHttpClient.newCall(request);
-
-       call.enqueue(new Callback() {
-           @Override
-           // 失败
-           public void onFailure(Call call, IOException e) {
-               e.printStackTrace();;
-           }
-
-           @Override
-           public void onResponse(Call call, Response response) throws IOException {
-
-               // 打印头
-               Headers headers = response.headers();
-              for(int i=0;i<headers.size();i++){
-                  String name = headers.name(i);
-                  String value = headers.get(name);
-                  System.out.println(name + " : "+value );
-              }
-               // 打印体
-               ResponseBody body = response.body();
-               InputStream inputStream = body.byteStream();
-
-               String str = StreamUtils.convertStream2Str(inputStream);
-
-               System.out.println("str:"+str);
-
-           }
-       });
-
-    }
+//    public void testHead(){
+//
+//        // http://raw.githubusercontent.com/bbscom2008/zzitcast/master/andoid.rar
+//
+//        OkHttpClient okHttpClient = new OkHttpClient();
+//
+////        String url = "http://raw.githubusercontent.com/bbscom2008/zzitcast/master/andoid.rar";
+//
+//        String url = "https://github.com/bbscom2008/yygame/tree/master/res";
+//
+//        Request request = new Request.Builder()
+//                .url(url)
+//                .method("GET",null)
+//                .build();
+//
+//        Call call = okHttpClient.newCall(request);
+//
+//       call.enqueue(new Callback() {
+//           @Override
+//           // 失败
+//           public void onFailure(Call call, IOException e) {
+//               e.printStackTrace();;
+//           }
+//
+//           @Override
+//           public void onResponse(Call call, Response response) throws IOException {
+//
+//               // 打印头
+//               Headers headers = response.headers();
+//              for(int i=0;i<headers.size();i++){
+//                  String name = headers.name(i);
+//                  String value = headers.get(name);
+//                  System.out.println(name + " : "+value );
+//              }
+//               // 打印体
+//               ResponseBody body = response.body();
+//               InputStream inputStream = body.byteStream();
+//
+//               String str = StreamUtils.convertStream2Str(inputStream);
+//
+//               System.out.println("str:"+str);
+//
+//           }
+//       });
+//
+//    }
 
 
 

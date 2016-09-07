@@ -94,7 +94,7 @@ public class RestStatitcsActivity extends BaseActivity {
         long toDate = now + MyConstance.One_Day * 15; // 后15天
 
         // 获得这段时间的课表
-        classBeanList = eDao.getClassByDate(fromDate, toDate);
+        classBeanList = eDao.getKebiaoByDate(fromDate, toDate);
 
         // 获得这段时间的日期
         List<SsBean> dateList = eDao.getDateByDate(fromDate, toDate);
@@ -174,7 +174,7 @@ public class RestStatitcsActivity extends BaseActivity {
         llTitle.setBackgroundResource(R.color.black_gray);
 
         addSubTitleText(" 日  期 ", llTitle);
-        addSubTitleText("数  量", llTitle);
+        addSubTitleText("休息人数", llTitle);
         for (String teacher : teachers) {
             addSubTitleText(teacher, llTitle);
         }

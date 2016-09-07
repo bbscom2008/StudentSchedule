@@ -32,5 +32,10 @@
         android:id="@+id/btn_rest"
         android:layout_height="wrap_content" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:text="今天上课情况"
+        android:id="@+id/btn_today_kebiao"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

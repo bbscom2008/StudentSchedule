@@ -17,6 +17,7 @@ import java.util.List;
 import zz.itcast.studentschedule.R;
 import zz.itcast.studentschedule.activity.RestStatitcsActivity;
 import zz.itcast.studentschedule.activity.TeacherActivity;
+import zz.itcast.studentschedule.activity.TodayKebiaoActivity;
 import zz.itcast.studentschedule.db.ExcelDao;
 
 
@@ -44,6 +45,8 @@ public class TeacherFragment extends Fragment  {
         System.out.println("teacherFragment.onResume===========");
     }
 
+    private Button btnToDay;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -51,7 +54,16 @@ public class TeacherFragment extends Fragment  {
 
         System.out.println("onCreateView==========");
         tv_desc = (TextView) view.findViewById(R.id.tv_desc);
-
+        btnToDay = (Button) view.findViewById(R.id.btn_today_kebiao);
+        btnToDay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 休息日统计的页面
+                Intent intent = new Intent(getActivity(),TodayKebiaoActivity.class);
+                startActivity(intent);
+//                eDao.test();;
+            }
+        });
         btnRest = (Button) view.findViewById(R.id.btn_rest);
         btnRest.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,6 +71,7 @@ public class TeacherFragment extends Fragment  {
                 // 休息日统计的页面
                 Intent intent = new Intent(getActivity(),RestStatitcsActivity.class);
                 startActivity(intent);
+
 
 
             }

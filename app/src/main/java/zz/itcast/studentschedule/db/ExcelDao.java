@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 import zz.itcast.studentschedule.bean.SsBean;
+import zz.itcast.studentschedule.utils.MyUtils;
 
 
 public class ExcelDao {
@@ -79,28 +80,20 @@ public class ExcelDao {
      */
     public void createNewDb(){
 
-
-
         File dbFile = getDatabasePath(DB_NAME);
-
-        if(dbFile.exists()){
-            dbFile.delete(); // 删除以前的
-        }
-
         try {
-            dbFile.createNewFile(); // 创建新的
+            if(!dbFile.exists()){
+                dbFile.createNewFile(); // 创建新的
+
+                db = SQLiteDatabase.openOrCreateDatabase(dbFile, null);
+
+                db.execSQL("create table if not exists timetable(_id integer primary key autoincrement, " +
+                        "date integer, date_str varchar(20), week varchar(20),content varchar(50),room varchar(20)," +
+                        "teacher varchar(10),ps varchar(50),grade varchar(20));");
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
-        db = SQLiteDatabase.openOrCreateDatabase(dbFile, null);
-
-        db.execSQL("create table if not exists timetable(_id integer primary key autoincrement, " +
-                "date integer, date_str varchar(20), week varchar(20),content varchar(50),room varchar(20)," +
-                "teacher varchar(10),ps varchar(50),grade varchar(20));");
-
-
     }
 
     private int index_date = 1;
@@ -130,11 +123,58 @@ public class ExcelDao {
 
     private  String table_ss = "timetable";
 
-    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+    /**
+     * 注意，sdf 后面有一个空格
+     */
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd ");
+//    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
 
     /**
-     * 添加课程内容
-     *
+     * 添加或更新课程内容
+     * @param sBean 课程内容
+     */
+    public void addKebiao(SsBean sBean) {
+
+        ContentValues values = new ContentValues();
+
+        values.put("week", sBean.week);
+        values.put("content", sBean.content);
+        values.put("room", sBean.room);
+        values.put("teacher", sBean.teacher);
+        values.put("ps", sBean.ps);
+
+        String dateStr = sdf.format(new Date(sBean.date));
+
+        values.put("date_str", dateStr);
+        // 添加
+        values.put("date", sBean.date);
+        values.put("grade", sBean.grade);
+        db.insert(table_ss, null, values);
+    }
+
+    /**
+     * 更新课程内容
+     * @param sBean 课程内容
+     */
+    public void updateKebiao(SsBean sBean) {
+
+        ContentValues values = new ContentValues();
+
+        values.put("week", sBean.week);
+        values.put("content", sBean.content);
+        values.put("room", sBean.room);
+        values.put("teacher", sBean.teacher);
+        values.put("ps", sBean.ps);
+        String dateStr = sdf.format(new Date(sBean.date));
+        values.put("date_str", dateStr);
+        // 更新
+        db.update(table_ss,values," grade = ? AND date = ? ",new String[]{sBean.grade,sBean.date+""});
+
+    }
+
+    /**
+     * 添加或更新课程内容
      * @param sBean 课程内容
      */
     public void addOrUpdate(SsBean sBean) {
@@ -287,7 +327,7 @@ public class ExcelDao {
      * @param toDate
      * @return
      */
-    public List<SsBean> getClassByDate(long fromDate, long toDate) {
+    public List<SsBean> getKebiaoByDate(long fromDate, long toDate) {
 
         List<SsBean> beanList = new ArrayList<SsBean>();
 
@@ -308,6 +348,51 @@ public class ExcelDao {
         List<SsBean> beanList = new ArrayList<SsBean>();
 
         Cursor cursor =  db.query(table_ss,null,"date > ? AND date < ?",new String[]{fromDate+"",toDate+""}," date ",null," date ");
+        beanList =  parseCursor2BeanList(cursor);
+
+        return beanList;
+    }
+
+    /**
+     * 删除指定班级课表
+     * @param grade
+     */
+    public int deleteGrade(String grade) {
+
+       int num =  db.delete(table_ss," grade = ?",new String[]{grade} );
+
+        return num;
+    }
+
+    public void test() {
+
+        // 获得当天的课程
+        String dateStr = sdf.format(new Date(System.currentTimeMillis()));
+        System.out.println("dateStr:"+dateStr);
+        Cursor cursor = db.query(table_ss, null, " date_str = ?", new String[]{dateStr}, null, null, null);
+
+        MyUtils.printCursor(cursor);
+    }
+
+    /**
+     * 获得今天的课表
+     * @return
+     */
+    public List<SsBean> getKebiaoByToday() {
+        return getKebiaoByDate(System.currentTimeMillis());
+    }
+    /**
+     * 获得今天的课表
+     * @return
+     */
+    public List<SsBean> getKebiaoByDate(long time) {
+
+        List<SsBean> beanList = new ArrayList<SsBean>();
+        // 今天的字符串格式
+        String dateStr = sdf.format(new Date(time));
+
+        Cursor cursor = db.query(table_ss, null, " date_str = ?", new String[]{dateStr}, null, null, " grade");
+
         beanList =  parseCursor2BeanList(cursor);
 
         return beanList;

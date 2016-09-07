@@ -1,5 +1,6 @@
 package zz.itcast.studentschedule.utils;
 
+import android.database.Cursor;
 import android.text.format.Time;
 
 import java.io.InputStream;
@@ -34,12 +35,15 @@ public class MyUtils {
             int rs = st.getColumns(); // 列
             int rows = st.getRows(); // 行
 
+            // 行数不应大于 150 行，但有一些空白行，导致 rows 会是 858
+            if(rows>200){
+                rows = 200;
+            }
+
             System.out.println("列数===>" + rs + "行数：" + rows);
 
             // 课表第一行是标题，跳过，所以从 k = 1 开始
-
             for (int k = 1; k < rows; k++) {// 行
-
                 StringBuffer sb = new StringBuffer();
                 SsBean bean =  new SsBean();
 
@@ -64,6 +68,7 @@ public class MyUtils {
                             }else{
                                 // 数据格式不正确,也有可能是已经结束了
                                 wrongCellStyle(k,i,cell);
+                                // 如果第一列不是日期，那就认为，结束了
                                 return beanList;
                             }
                             break;
@@ -250,6 +255,30 @@ public class MyUtils {
     public static String now(){
         return java.text.DateFormat.getTimeInstance().format(System.currentTimeMillis());
 
+    }
+
+    public static void printCursor(Cursor cursor){
+
+        if(cursor == null){
+            System.out.println("cursor == null");
+            return ;
+        }
+        if(cursor.getCount() == 0){
+            System.out.println("cursor.getCount() == 0");
+            return ;
+        }
+
+        System.out.println("总行数：cursor.getCount():"+cursor.getCount());
+
+        while(cursor.moveToNext()){
+            System.out.println("当前行："+cursor.getPosition());
+            int columnCount = cursor.getColumnCount();
+            for(int i=0;i<columnCount;i++){
+                String name = cursor.getColumnName(i);
+                String value = cursor.getString(i);
+                System.out.println(name + " : "+ value);
+            }
+        }
     }
 
 }

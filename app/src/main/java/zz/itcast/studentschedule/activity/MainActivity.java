@@ -370,7 +370,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                 return;
             }
 
-            eDao.createNewDb();// 创建新的数据库
+//            eDao.createNewDb();// 创建数据库
 
             List<File> xlsFiles  = new ArrayList<File>();
 
@@ -402,18 +402,27 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
 
                 int indexDi = fileName.indexOf("第");
                 int indexQi = fileName.indexOf("期");
-
+                // 拼凑班级名称
                 String grade = "android_" + fileName.substring(indexDi + 1, indexQi);
 
                 System.out.println("select :: grade:" + grade + " : " + fileName);
 
                 FileInputStream fin = new FileInputStream(file);
-
+                // xml文件中的数据
                 List<SsBean> beanList = MyUtils.readExcel(fin);
+                // TODO  此处效率应该改进。
+                // 获得数据库中当前班级的数据，如果没有，说明是新班级，全部插入数据，
+                // 如果有内容，说明班级有改动，应将需要改动的，更新至数据库，但比较麻烦，
+                // 如果有内容，删除原有内容，添加新内容
+                List<SsBean> dbBeanList = eDao.getClassByGrade(grade);
+                if(dbBeanList.size() > 0){
+                    int num = eDao.deleteGrade(grade);
+                    System.out.println("删除以前的班级：Num: "+num);
+                }
 
                 for (SsBean bean : beanList) {
                     bean.grade = grade;
-                    eDao.addOrUpdate(bean);
+                    eDao.addKebiao(bean);
                 }
             }
 
