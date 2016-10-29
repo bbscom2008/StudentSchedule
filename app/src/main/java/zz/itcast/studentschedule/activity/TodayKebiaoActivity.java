@@ -58,6 +58,11 @@ public class TodayKebiaoActivity extends BaseActivity {
     private void fillData() {
         // 获得今天的课表
         todayKebiaoList = eDao.getKebiaoByToday();
+        if(todayKebiaoList.size() == 0){
+            showToast("当前没有课表内容，请更新课表!");
+            finish();
+            return ;
+        }
         kebiaoMap.put(DAY_NUM/2,todayKebiaoList);
 
         viewPager.setAdapter(new MyAdapter());
@@ -84,6 +89,23 @@ public class TodayKebiaoActivity extends BaseActivity {
 
             TextView tvDate = (TextView) view.findViewById(R.id.tv_date);
             TextView tvWeek = (TextView) view.findViewById(R.id.tv_week);
+
+            TextView tvPreDay = (TextView) view.findViewById(R.id.tv_preday);
+            TextView tvNextDay = (TextView) view.findViewById(R.id.tv_nextday);
+            tvPreDay.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    viewPager.setCurrentItem(viewPager.getCurrentItem()-1);
+
+                }
+            });
+            tvNextDay.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    viewPager.setCurrentItem(viewPager.getCurrentItem()+1);
+                }
+            });
+
             ListView listView = (ListView) view.findViewById(R.id.listView);
 
             List<SsBean> thisDayKebiao = getThisDayKebiao(position);
@@ -134,7 +156,7 @@ public class TodayKebiaoActivity extends BaseActivity {
 
         @Override
         public int getCount() {
-            return todayKebiaoList.size();
+            return thisDayKebiao.size();
         }
 
         @Override

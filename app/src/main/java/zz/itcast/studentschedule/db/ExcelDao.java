@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Environment;
 import android.text.TextUtils;
 
 import java.io.File;
@@ -15,6 +14,9 @@ import java.util.Date;
 import java.util.List;
 
 import zz.itcast.studentschedule.bean.SsBean;
+import zz.itcast.studentschedule.utils.FileUtil;
+import zz.itcast.studentschedule.utils.MyConstance;
+import zz.itcast.studentschedule.utils.MyFinal;
 import zz.itcast.studentschedule.utils.MyUtils;
 
 
@@ -29,7 +31,7 @@ public class ExcelDao {
     private ExcelDao(Context ctx) {
         this.ctx = ctx;
         try {
-            File dbFile = getDatabasePath("school_time_table.db");
+            File dbFile = FileUtil.getDatabaseFile(MyFinal.dbName);
 
             if(dbFile.exists()){ // 之前已经存在
                 db = SQLiteDatabase.openDatabase(dbFile.getAbsolutePath(),null,SQLiteDatabase.OPEN_READWRITE);
@@ -45,51 +47,41 @@ public class ExcelDao {
     }
 
 
-    /**
-     * 指定数据库的位置
-     * // 默认在 SD卡/me 文件夹
-     */
-    public File getDatabasePath(String name) {
 
-        File dbFile = null;
-
-        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-
-            File sdFile = Environment.getExternalStorageDirectory();
-
-            File dir = new File(sdFile, "me"); //
-            if (!dir.exists()) {
-                dir.mkdir();
-            }
-
-            dbFile = new File(dir, name);
-
-        }else{
-            throw new RuntimeException("没有安装SD卡，无法工作");
-        }
-        return dbFile;
-    }
 
     /**
      * 数据库的名称
      */
-    private  String DB_NAME = "school_time_table.db";
+//    private  String DB_NAME = "school_time_table.db";
 
     /**
      * 删除旧的数据库，创建新的数据库
      */
     public void createNewDb(){
 
-        File dbFile = getDatabasePath(DB_NAME);
+        File dbFile = FileUtil.getDatabaseFile(MyFinal.dbName);
         try {
             if(!dbFile.exists()){
-                dbFile.createNewFile(); // 创建新的
-
+                boolean newFile = dbFile.createNewFile();// 创建新的
+                if(!newFile){
+                    throw new RuntimeException("创建文件失败");
+                }
                 db = SQLiteDatabase.openOrCreateDatabase(dbFile, null);
-
+            /**
+             * // 课程表
+             * date 日期 date_str 日期的字符串形式 week 星期 content 课程内容 room 教室
+             * teacher 老师 class_type 上课类型( 	1 讲师上课 2 学生自习 - 有助教 	3 正常休息 	4 节假日)
+             * ps 备注（一般为空） grade 班级名称
+             */
                 db.execSQL("create table if not exists timetable(_id integer primary key autoincrement, " +
                         "date integer, date_str varchar(20), week varchar(20),content varchar(50),room varchar(20)," +
-                        "teacher varchar(10),ps varchar(50),grade varchar(20));");
+                        "teacher varchar(10),class_type integer,ps varchar(50),grade varchar(20));");
+                // 班级信息表
+
+                // 同事通讯录表
+
+            }else{
+                throw new RuntimeException("数据库已经存在");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -102,8 +94,9 @@ public class ExcelDao {
     private int index_content = 4;
     private int index_room = 5;
     private int index_teacher = 6;
-    private int index_ps = 7;
-    private int index_grade = 8;
+    private int index_class_type = 7;
+    private int index_ps = 8;
+    private int index_grade = 9;
 
     private static ExcelDao instance;
 
@@ -148,6 +141,7 @@ public class ExcelDao {
 
         values.put("date_str", dateStr);
         // 添加
+        values.put("class_type", sBean.classType);
         values.put("date", sBean.date);
         values.put("grade", sBean.grade);
         db.insert(table_ss, null, values);
@@ -252,11 +246,21 @@ public class ExcelDao {
     public List<SsBean> getClassByGrade(String grade) {
 
         List<SsBean> beanList = new ArrayList<SsBean>();
+
+
+
         Cursor cursor = db.query(table_ss, null, " grade = ?", new String[]{grade}, null, null, " date ");
 
         beanList = parseCursor2BeanList(cursor);
 
         return beanList;
+    }
+
+    public boolean isOpen(){
+        if(db!=null && db.isOpen()){
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -290,6 +294,10 @@ public class ExcelDao {
     public List<String> getAllTeacher() {
 
         List<String> allTeacher = new ArrayList<String>();
+
+        if(!isOpen()){
+            return allTeacher;
+        }
 
         Cursor cursor = db.query(table_ss, null, null, null, "teacher", null, null);
         while(cursor.moveToNext()){
@@ -367,9 +375,9 @@ public class ExcelDao {
     public void test() {
 
         // 获得当天的课程
-        String dateStr = sdf.format(new Date(System.currentTimeMillis()));
+        String dateStr = sdf.format(new Date(System.currentTimeMillis()+ MyConstance.One_Day*3));
         System.out.println("dateStr:"+dateStr);
-        Cursor cursor = db.query(table_ss, null, " date_str = ?", new String[]{dateStr}, null, null, null);
+        Cursor cursor = db.query(table_ss, null, " date_str = ?", new String[]{dateStr}, null, null, " grade");
 
         MyUtils.printCursor(cursor);
     }
@@ -393,8 +401,21 @@ public class ExcelDao {
 
         Cursor cursor = db.query(table_ss, null, " date_str = ?", new String[]{dateStr}, null, null, " grade");
 
+
         beanList =  parseCursor2BeanList(cursor);
 
         return beanList;
     }
+
+    public void clearData() {
+        db.delete(table_ss,null,null);
+        instance = null;
+    }
+
+    public void closeDb(){
+        if(db!=null && db.isOpen()){
+            db.close();;
+        }
+    }
+
 }

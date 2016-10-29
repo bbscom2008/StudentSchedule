@@ -7,8 +7,14 @@ import android.test.ApplicationTestCase;
 import android.text.format.Time;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.List;
 
+import zz.itcast.studentschedule.bean.SsBean;
 import zz.itcast.studentschedule.db.ExcelDao;
+import zz.itcast.studentschedule.utils.MyUtils;
+import zz.itcast.studentschedule.utils.ZipUtil;
 
 /**
  * <a href="http://d.android.com/tools/testing/testing_android.html">Testing Fundamentals</a>
@@ -58,6 +64,51 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
 
         System.out.println("DB  真的创建了吗？");
+
+    }
+
+    public void testPostJson(){
+
+//        HttpUtils httpUtils = HttpUtils.getInstance();
+//        httpUtils.postJson();
+
+//        String absolutePath = Environment.getExternalStorageDirectory().getAbsolutePath();
+//        System.out.println("absolutePath:"+absolutePath);
+
+        try {
+            String filePath = "mnt/shared/Other/yeshen/郑州传智Android就业18期（20160618面授）课表.xls";
+
+            File testFile= new File(filePath);
+            System.out.println(testFile.exists());
+
+            FileInputStream fin = new FileInputStream(testFile);
+
+            List<SsBean> beans = MyUtils.readExcel(fin);
+            for(SsBean bean : beans){
+                System.out.println(bean);
+            }
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+    public void testZipFolder(){
+
+        try {
+            String filePath = "mnt/shared/Other/yeshen/tttt.zip";
+
+            List<String> unzip = ZipUtil.unzip(filePath, null);
+            for (String msg : unzip){
+                System.out.println(msg);
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
     }
 

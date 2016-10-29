@@ -9,13 +9,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-
+        <TextView
+            style="@style/Text_normal"
+            android:id="@+id/tv_preday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="《前" />
         <TextView
             android:id="@+id/tv_date"
             style="@style/Text_normal"
             android:layout_width="0dp"
+            android:gravity="center"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
             android:layout_weight="1"
             android:text="当前日期：" />
 
@@ -23,10 +28,16 @@
             android:id="@+id/tv_week"
             style="@style/Text_normal"
             android:layout_width="0dp"
+            android:gravity="center"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
             android:layout_weight="1"
             android:text="当前星期：" />
+        <TextView
+            style="@style/Text_normal"
+            android:layout_width="wrap_content"
+            android:id="@+id/tv_nextday"
+            android:layout_height="wrap_content"
+            android:text="后》" />
     </LinearLayout>
 
 

@@ -17,8 +17,8 @@ import zz.itcast.studentschedule.utils.MyFinal;
 
 public class BaseActivity extends FragmentActivity{
 
-    protected ExcelDao eDao;
-    protected SharedPreferences sp;
+    public ExcelDao eDao;
+    public SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,13 +45,11 @@ public class BaseActivity extends FragmentActivity{
     }
 
     protected  void showProgressMessage(final String msg){
-
-        showProgress();
-
         runOnUiThread(new Thread(){
                   @Override
             public void run() {
                 super.run();
+                showProgress();
                 proDlg.setMessage(msg);
             }
     }

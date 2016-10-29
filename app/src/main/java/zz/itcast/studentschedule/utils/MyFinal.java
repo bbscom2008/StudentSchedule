@@ -10,6 +10,8 @@ public class MyFinal {
     public static String sdCardPath = Environment.getExternalStorageDirectory().getAbsolutePath();
 
 
+    public static String dbName = "school_time_table.db";
+
     /**
      * 工作目录
      */
@@ -57,5 +59,5 @@ public class MyFinal {
     /**
      * SP 文件 中自动更新的KEY
      */
-    public static String key_auto_update = "key_auto_update";
+//    public static String key_auto_update = "key_auto_update";
 }

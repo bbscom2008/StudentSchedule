@@ -67,7 +67,9 @@ public class HttpUtils {
                             return ;
                         }else{
                             holder.call.cancel();
-                            holder.callback.onError(null,new RuntimeException("联网超时了!!"));
+                            if( holder.callback!=null){
+                                holder.callback.onError(null,new RuntimeException("联网超时了!!"));
+                            }
                         }
 
 
@@ -128,6 +130,34 @@ public class HttpUtils {
         });
 
     }
+
+    /**
+     * 异步的get请求
+     *
+     * @param url 联网地址
+     *  @return  联网获得的响应体
+     */
+    public String getSyn(String url) {
+
+        String result = null;
+
+        System.out.println("开始联网:"+MyUtils.now());
+        Request request = new Request.Builder().url(url).build();
+
+        Call call = mOkHttpClient.newCall(request);
+
+        checkTimeOut(call,null);
+
+        try {
+            Response response = call.execute();
+            result =  response.body().string();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
 
     /**
      * 判断是否发生联网超时

@@ -13,6 +13,8 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 
+import zz.itcast.studentschedule.utils.FileUtil;
+
 /**
  * To work on unit tests, switch the Test Artifact in the Build Variants view.
  */
@@ -52,14 +54,9 @@ public class ExampleUnitTest {
 
             String str = new String(buffer, 0, read);
             System.out.println(str);
-
-
-
-
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     @Test
@@ -115,6 +112,24 @@ public class ExampleUnitTest {
 
     }
 
+
+    @Test
+    public void testMatch(){
+//        String str = "昨日凌晨3时，一条@云南:123456 @绿春:112233 刚修好的二级公路试通车不到两个月，整条路飞下悬崖，正宗的豆腐渣工程的微博在网络上疯传，截至昨日下午，该@微博:654321 转载次数达近万次。面对网友的质疑，昨日下午，@绿春:112233 县委宣传部回应，进入雨季以来，@绿春:112233 县境普降大雨，造成该县两条主要公路干道发生山体滑坡，公路中断。";
+//        Regex reg = new Regex(@"@\S+:\d{6}");
+//        MatchCollection mc = reg.Matches(str);
+//
+//        foreach (Match m in mc)
+//        {
+//            MessageBox.Show(m.Value);
+//        }
+
+        File file = new File("c:/ttt");
+       boolean b =  FileUtil.deleteAllFile(file);
+        System.out.println(b);
+
+
+    }
 
 
 

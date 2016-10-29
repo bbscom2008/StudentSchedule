@@ -2,9 +2,12 @@ package zz.itcast.studentschedule.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 
+/**
+ * 当前没有使用
+ */
+@Deprecated
 public class ExcelDbHelper extends SQLiteOpenHelper {
 
 	public ExcelDbHelper(Context context, String name,

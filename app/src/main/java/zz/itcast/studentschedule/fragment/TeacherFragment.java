@@ -19,6 +19,7 @@ import zz.itcast.studentschedule.activity.RestStatitcsActivity;
 import zz.itcast.studentschedule.activity.TeacherActivity;
 import zz.itcast.studentschedule.activity.TodayKebiaoActivity;
 import zz.itcast.studentschedule.db.ExcelDao;
+import zz.itcast.studentschedule.utils.FileUtil;
 
 
 /**
@@ -42,7 +43,6 @@ public class TeacherFragment extends Fragment  {
         super.onResume();
         fillData();
 
-        System.out.println("teacherFragment.onResume===========");
     }
 
     private Button btnToDay;
@@ -58,7 +58,7 @@ public class TeacherFragment extends Fragment  {
         btnToDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 休息日统计的页面
+                // 今日课表的页面
                 Intent intent = new Intent(getActivity(),TodayKebiaoActivity.class);
                 startActivity(intent);
 //                eDao.test();;
@@ -81,7 +81,7 @@ public class TeacherFragment extends Fragment  {
 
         eDao = ExcelDao.getInstance(getActivity());
 
-
+        fillData();
 
         return view;
     }
@@ -89,20 +89,31 @@ public class TeacherFragment extends Fragment  {
 
     private void fillData() {
 
+        if(!eDao.isOpen() && FileUtil.isHaveDbFile()){
+            tv_desc.setText("当前没有课表，请先更新!");
+            btnRest.setVisibility(View.GONE);
+            btnToDay.setVisibility(View.GONE);
+            return ;
+        }
+
         teacherList = eDao.getAllTeacher();
 
         if(teacherList.size() == 0){
             tv_desc.setText("当前没有课表，请先更新!");
             btnRest.setVisibility(View.GONE);
+            btnToDay.setVisibility(View.GONE);
             return ;
         }else{
             tv_desc.setText("讲师上课时间统计");
             btnRest.setVisibility(View.VISIBLE);
+            btnToDay.setVisibility(View.VISIBLE);
             gridView.setAdapter(new MyAdapter());
         }
 
 
     }
+
+
 
     public void flushView() {
         System.out.println("flushview=======");

@@ -148,7 +148,7 @@ public class ZipUtil {
      *            zip文件路径
      * @param targetPath
      *            解压缩到的位置，如果为null或空字符串则默认解压缩到跟zip包同目录跟zip包同名的文件夹下
-     * @return 文件名称的集合
+     * @return 文件名称的全路径的集合
      */
     public static List<String> unzip(String zipFilePath, String targetPath)
             throws IOException {
@@ -170,27 +170,28 @@ public class ZipUtil {
             }
 
             Enumeration entryEnum = zipFile.getEntries();
-
             if (null != entryEnum) {
                 ZipArchiveEntry zipEntry = null;
                 while (entryEnum.hasMoreElements()) {
 
                     zipEntry = (ZipArchiveEntry) entryEnum.nextElement();
-
+                    // 是文件夹
                     if (zipEntry.isDirectory()) {
-                        directoryPath = directoryPath + File.separator
-                                + zipEntry.getName();
+//                        directoryPath = directoryPath + File.separator
+//                                + zipEntry.getName();
                         System.out.println(directoryPath);
+
                         continue;
                     }
+                    // 是文件
                     if (zipEntry.getSize() > 0) {
                         // 文件
                         String fileName = zipEntry.getName();
-                        nameList.add(fileName);
-                        System.out.println("====fileName:"+fileName);
-
                         File targetFile = FileUtil.buildFile(directoryPath
                                 + File.separator + fileName, false);
+
+                        nameList.add(targetFile.getAbsolutePath());
+                        System.out.println("====fileName:"+targetFile.getAbsolutePath());
 
                         os = new BufferedOutputStream(new FileOutputStream(
                                 targetFile));
@@ -215,14 +216,15 @@ public class ZipUtil {
         } catch (IOException ex) {
             throw ex;
         } finally {
-            if(null != zipFile){
-                zipFile = null;
-            }
             if (null != is) {
                 is.close();
             }
             if (null != os) {
                 os.close();
+            }
+            if(null != zipFile){
+                zipFile.close();;
+                zipFile = null;
             }
         }
 

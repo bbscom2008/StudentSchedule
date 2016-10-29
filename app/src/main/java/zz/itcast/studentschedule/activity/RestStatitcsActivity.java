@@ -153,7 +153,8 @@ public class RestStatitcsActivity extends BaseActivity {
                 if (TextUtils.isEmpty(bean.content)) { // 今天 没课
                     state = null;
                 } else {
-                    state = bean.grade.replace("android_","");
+                    state = bean.grade.replace("就业_","");
+                    state = state.replace("基础_","");
                 }
                 break;
             }
@@ -192,11 +193,11 @@ public class RestStatitcsActivity extends BaseActivity {
         textView.setBackgroundResource(R.drawable.bg_rect);
         textView.setTextColor(Color.BLACK);
         textView.setText(name);
-        textView.setTextSize(14);
+        textView.setTextSize(12);
         textView.setPadding(15,15,15,15);
         textView.setGravity(Gravity.CENTER);
 
-        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(-2, -2);
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(110, -2);
         layout.addView(textView, param);
     }
 
@@ -238,15 +239,16 @@ public class RestStatitcsActivity extends BaseActivity {
                     textView.setGravity(Gravity.CENTER);
                     textView.setPadding(15,15,15,15);
                     textView.setTextColor(Color.BLACK);
-                    textView.setTextSize(14);
+                    textView.setSingleLine();
+                    textView.setTextSize(10);
                     textView.setBackgroundResource(R.drawable.bg_rect);
 
-                    tv.measure(0, 0);
-                    int width = tv.getMeasuredWidth();
-                    int height = tv.getMeasuredHeight();
-                    System.out.println("tv.getWidth():" + width);
+//                    tv.measure(0, 0);
+//                    int width = tv.getMeasuredWidth();
+//                    int height = tv.getMeasuredHeight();
+//                    System.out.println("tv.getWidth():" + width);
 
-                    LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(width, height);
+                    LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(110, ViewGroup.LayoutParams.MATCH_PARENT);
                     view.addView(textView, param);
                 }
             } else {

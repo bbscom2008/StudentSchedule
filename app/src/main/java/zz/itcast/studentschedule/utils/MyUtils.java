@@ -1,6 +1,7 @@
 package zz.itcast.studentschedule.utils;
 
 import android.database.Cursor;
+import android.text.TextUtils;
 import android.text.format.Time;
 
 import java.io.InputStream;
@@ -42,8 +43,8 @@ public class MyUtils {
 
             System.out.println("列数===>" + rs + "行数：" + rows);
 
-            // 课表第一行是标题，跳过，所以从 k = 1 开始
-            for (int k = 1; k < rows; k++) {// 行
+            // 课表前二行是标题，跳过，所以从 k = 2 开始
+            for (int k = 2; k < rows; k++) {// 行
                 StringBuffer sb = new StringBuffer();
                 SsBean bean =  new SsBean();
 
@@ -79,7 +80,7 @@ public class MyUtils {
                                 bean.week = ((LabelCell) cell).getString();
                             }else{
                                 // 数据格式不对
-                                wrongCellStyle(k,i,cell);
+//                                wrongCellStyle(k,i,cell);
                             }
 
                             break;
@@ -89,7 +90,6 @@ public class MyUtils {
                                 // 获得cell具体类型值的方式
                                 bean.content = ((LabelCell) cell).getString();
                             }else if( cell.getType() == CellType.EMPTY){
-
                                 bean.content = "";
                             }else{
                                 // 数据格式不对
@@ -105,8 +105,9 @@ public class MyUtils {
 
                                 bean.room = "";
                             }else{
+                                bean.room = cell.getContents();
                                 // 数据格式不对
-                                wrongCellStyle(k,i,cell);
+//                                wrongCellStyle(k,i,cell);
                             }
 
                             break;
@@ -143,6 +144,22 @@ public class MyUtils {
 //                            wrongCellStyle(k,i,cell);
                             break;
                     }
+                    //  取出刚加入的bean 判断 这天的课程类型
+                    SsBean sBean = beanList.get(beanList.size()-1);
+                    if(!TextUtils.isEmpty(sBean.teacher)){ //  说明有老师上课
+                        sBean.classType = 1;
+                    }else{
+                        // 没老师
+                        String content = sBean.content; // 课程内容
+                        if(TextUtils.isEmpty(content)){ // 空的
+                            sBean.classType = 3;
+                        }else if(content.contains("练习")){ // 练习课
+                            sBean.classType = 2;
+                        }else if(content.contains("假")){
+                            sBean.classType = 2;
+                        }
+                    }
+
                 }
             }
             // 关闭

@@ -11,8 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.GridView;
 
 import java.util.List;
@@ -33,19 +31,7 @@ public class OtherFragment extends Fragment {
 
     private GridView gridView;
 
-    private CheckBox checkBox;
-
     private SharedPreferences sp;
-
-    private CompoundButton.OnCheckedChangeListener checkListener = new CompoundButton.OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-            sp.edit().putBoolean(MyFinal.key_auto_update,isChecked).commit();
-
-        }
-    };
-
 
 
     @Nullable
@@ -56,12 +42,6 @@ public class OtherFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_other,null);
         gridView = (GridView) view.findViewById(R.id.gridView);
-
-        checkBox = (CheckBox) view.findViewById(R.id.cb_auto_update);
-        checkBox.setOnCheckedChangeListener(checkListener);
-
-        boolean isAutoUpdate = sp.getBoolean(MyFinal.key_auto_update, false);
-        checkBox.setChecked(isAutoUpdate);
 
 
         eDao = ExcelDao.getInstance(getActivity());

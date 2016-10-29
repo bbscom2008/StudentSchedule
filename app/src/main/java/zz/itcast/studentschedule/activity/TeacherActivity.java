@@ -19,6 +19,9 @@ import zz.itcast.studentschedule.R;
 import zz.itcast.studentschedule.bean.SsBean;
 import zz.itcast.studentschedule.utils.MyUtils;
 
+/**
+ * 显示某位讲师的上课信息
+ */
 public class TeacherActivity extends BaseActivity {
 
     private ListView listView;

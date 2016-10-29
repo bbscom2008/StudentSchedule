@@ -55,11 +55,23 @@ public class SsBean {
 
 	/**
 	 * 班级
-	 * 如 android_10 、 android_11
-	 * 如果是基础班那么是： java_16 或 java_17
+	 * 如 android_基础_10 、 android_就业_11
+	 * 如 javaEE_基础_16 或 javaEE_就业_17
 	 */
 	public String grade;
 
-
-
+	@Override
+	public String toString() {
+		return "SsBean{" +
+				"date=" + date +
+				", dateStr='" + dateStr + '\'' +
+				", week='" + week + '\'' +
+				", content='" + content + '\'' +
+				", room='" + room + '\'' +
+				", teacher='" + teacher + '\'' +
+				", ps='" + ps + '\'' +
+				", classType=" + classType +
+				", grade='" + grade + '\'' +
+				'}';
+	}
 }

@@ -20,12 +20,14 @@
             <LinearLayout
                 android:id="@+id/ll_list_title"
                 android:layout_width="match_parent"
+                android:background="#ffffffff"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"></LinearLayout>
 
             <ListView
                 android:id="@+id/listView"
                 android:layout_width="match_parent"
+                android:background="#ffffffff"
                 android:layout_height="match_parent"></ListView>
 
 

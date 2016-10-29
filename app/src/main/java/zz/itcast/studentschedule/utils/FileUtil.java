@@ -1,5 +1,7 @@
 package zz.itcast.studentschedule.utils;
 
+import android.os.Environment;
+
 import java.io.File;
 
 public class FileUtil {
@@ -24,4 +26,54 @@ public class FileUtil {
 		}
 		return target;
 	}
+
+	public static  boolean isHaveDbFile() {
+		File db  =FileUtil.getDatabaseFile(MyFinal.dbName);
+		return db.exists();
+	}
+
+	/**
+	 * 指定数据库的位置
+	 * // 默认在 SD卡/me 文件夹
+	 */
+	public static File getDatabaseFile(String name) {
+
+		File dbFile = null;
+
+		if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+
+			File sdFile = Environment.getExternalStorageDirectory();
+
+			File dir = new File(sdFile, "me"); //
+			if (!dir.exists()) {
+				dir.mkdir();
+			}
+
+			dbFile = new File(dir, name);
+
+		}else{
+			throw new RuntimeException("没有安装SD卡，无法工作");
+		}
+		return dbFile;
+	}
+
+	/**
+	 * 删除指定文件夹中的所有文件
+	 * @param file
+     * @return
+     */
+	public static boolean deleteAllFile(File file){
+		boolean isSuccess = true;
+		if(file.isDirectory()){
+			File[] files = file.listFiles();
+			if(files.length != 0){ // 有文件
+				for(File aFile : files){
+					isSuccess|=deleteAllFile(aFile);
+				}
+			}
+		}
+		file.delete();
+		return isSuccess;
+	}
+
 }
