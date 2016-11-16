@@ -132,5 +132,35 @@ public class ExampleUnitTest {
     }
 
 
+    @Test
+    public void tttt(final String age){
+
+//        final int age = 20;
+//        final String age = "adf";
+        final String test = "hello" ;
+
+//       new Thread(){
+//           @Override
+//           public void run() {
+//               super.run();
+//               System.out.println(test);
+//              String tt= age;
+//
+//           }
+//       }.start();
+
+
+//        new Runnable(){
+//            @Override
+//            public void run() {
+//                String tt = test;
+//
+//            }
+//        };
+
+    }
+
+
+
 
 }

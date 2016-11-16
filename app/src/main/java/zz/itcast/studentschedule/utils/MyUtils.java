@@ -43,8 +43,8 @@ public class MyUtils {
 
             System.out.println("列数===>" + rs + "行数：" + rows);
 
-            // 课表前二行是标题，跳过，所以从 k = 2 开始
-            for (int k = 2; k < rows; k++) {// 行
+            // 课表前三行是标题，跳过，所以从 k = 3 开始
+            for (int k = 3; k < rows; k++) {// 行
                 StringBuffer sb = new StringBuffer();
                 SsBean bean =  new SsBean();
 

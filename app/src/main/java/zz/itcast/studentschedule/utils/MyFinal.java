@@ -2,6 +2,8 @@ package zz.itcast.studentschedule.utils;
 
 import android.os.Environment;
 
+import zz.itcast.studentschedule.app.MyApp;
+
 public class MyFinal {
 
     /**
@@ -15,7 +17,18 @@ public class MyFinal {
     /**
      * 工作目录
      */
-    public static String workDir = Environment.getExternalStorageDirectory().getAbsolutePath()+"/me";
+//    private  static String workDir = Environment.getExternalStorageDirectory().getAbsolutePath()+"/me";
+
+    public static String getWorkDir(){
+        String workDir = null;
+        // 有SD 卡
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            workDir = Environment.getExternalStorageDirectory().getAbsolutePath()+"/me";
+        }else{
+            workDir = MyApp.app.getFilesDir().getAbsolutePath()+"/me";
+        }
+        return workDir;
+    }
 
 
     /**
@@ -33,7 +46,7 @@ public class MyFinal {
     /**
      * 课表文件的本地地址( 固定不变的)
      */
-    public static String kebiaoFilePath = workDir+"/android.zip";
+    public static String kebiaoFilePath = getWorkDir()+"/android.zip";
 
 
     /**
@@ -44,7 +57,7 @@ public class MyFinal {
     /**
      * APK文件本地地址 ( 固定不变的)
      */
-    public static String apkFilePath = workDir+"/app_kebiao.apk";
+    public static String apkFilePath = getWorkDir()+"/app_kebiao.apk";
 
 
     /**

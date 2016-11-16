@@ -4,6 +4,8 @@ import android.os.Environment;
 
 import java.io.File;
 
+import zz.itcast.studentschedule.app.MyApp;
+
 public class FileUtil {
 	/**
 	 * 生产文件 如果文件所在路径不存在则生成路径
@@ -39,21 +41,24 @@ public class FileUtil {
 	public static File getDatabaseFile(String name) {
 
 		File dbFile = null;
-
+		File sdFile = null;
 		if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
 
-			File sdFile = Environment.getExternalStorageDirectory();
-
-			File dir = new File(sdFile, "me"); //
-			if (!dir.exists()) {
-				dir.mkdir();
-			}
-
-			dbFile = new File(dir, name);
-
+			sdFile = Environment.getExternalStorageDirectory();
 		}else{
-			throw new RuntimeException("没有安装SD卡，无法工作");
+			sdFile = MyApp.app.getFilesDir();
+
+			// 有些手机没有SD卡，只有内置卡
+//			throw new RuntimeException("没有安装SD卡，无法工作");
 		}
+
+		File dir = new File(sdFile, "me"); //
+		if (!dir.exists()) {
+			dir.mkdir();
+		}
+
+		dbFile = new File(dir, name);
+
 		return dbFile;
 	}
 

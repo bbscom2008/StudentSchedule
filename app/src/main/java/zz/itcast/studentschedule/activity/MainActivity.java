@@ -66,6 +66,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // 如需清除以前的数据，运行下面这行代码
         clearOldData();
 
         setContentView(R.layout.activity_main);
@@ -113,7 +114,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
             eDao.clearData();
         }
         // 删除文件
-        File file = new File(MyFinal.workDir);
+        File file = new File(MyFinal.getWorkDir());
         FileUtil.deleteAllFile(file);
     }
 
@@ -189,37 +190,54 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
 
         eDao = ExcelDao.getInstance(this);
 
-        // 解压至同级目录
-//        try {
-//            String filePath = "mnt/shared/Other/yeshen/android.zip";
-//            List<String> unZipNameList = ZipUtil.unzip(filePath, null);
-//            LogUtils.logleo("解压完成");
-//            // 解析
-//            parseXmlToDb(unZipNameList);
-//
-//            // 更新页面
-//            teacherFragment.flushView();
-//            hideProgress();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        boolean isTest = false;
+//        boolean isTest = true;
+        if(isTest){
+            showProgressMessage("正在处理，请稍候...");
+            //  本地测试：解压至同级目录
+            new Thread(){
+                @Override
+                public void run() {
+                    try {
+//                String filePath = "mnt/shared/Other/yeshen/android.zip";
+                        String filePath = "/storage/sdcard0/Download/android.zip";
+                        List<String> unZipNameList = ZipUtil.unzip(filePath, null);
+                        LogUtils.logleo("解压完成");
+                        // 解析
+                        parseXmlToDb(unZipNameList);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                // 更新页面
+                                teacherFragment.flushView();
+                                hideProgress();
+                            }
+                        });
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }.start();
 
-        if (!isHaveNet()) {
-            showToast("当前没有网络，请检查后重试!");
-            return;
-        }
+        }else{
+            // 正式代码
+            if (!isHaveNet()) {
+                showToast("当前没有网络，请检查后重试!");
+                return;
+            }
 
-        if (version.isHaveNewApk) {
-            showUpdateDialog();
-            return;
+            if (version.isHaveNewApk) {
+                showUpdateDialog();
+                return;
+            }
+            if (version.isHaveNewKeBiao) {
+                updateKebiao();
+                return;
+            }
+            // 联网检查
+            new AutoCheckUpdateTask().execute(this);
+            showProgressMessage("正在检查更新...");
         }
-        if (version.isHaveNewKeBiao) {
-            updateKebiao();
-            return;
-        }
-        // 联网检查
-        new AutoCheckUpdateTask().execute(this);
-        showProgressMessage("正在检查更新...");
     }
 
     private void updateKebiao() {
@@ -234,7 +252,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
 
                 showProgressMessage("正在下载文件");
 
-                File workFile = new File(MyFinal.workDir);
+                File workFile = new File(MyFinal.getWorkDir());
                 if(!workFile.exists()){
                     workFile.mkdirs();
                 }
@@ -437,7 +455,19 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
             int start = fileName.indexOf("JavaEE");
             int end = fileName.indexOf("期");
             grade = "javaEE_就业_" + fileName.substring(start + 8, end).trim();
-        }
+        }else
+        // 郑州黑马双元UI设计就业04期（20160922双元）课表
+        if( fileName.contains("UI设计就业")){
+            int start = fileName.indexOf("UI设计就业");
+            int end = fileName.indexOf("期");
+            grade = "UI_就业_" + fileName.substring(start + 6, end).trim();
+        }else
+            // 郑州黑马双元php就业02期（20160919双元）课表
+            if( fileName.contains("php就业")){
+                int start = fileName.indexOf("php就业");
+                int end = fileName.indexOf("期");
+                grade = "php_就业_" + fileName.substring(start + 5, end).trim();
+            }
 
         return grade;
     };

@@ -408,7 +408,9 @@ public class ExcelDao {
     }
 
     public void clearData() {
-        db.delete(table_ss,null,null);
+        if(db!=null){
+            db.delete(table_ss,null,null);
+        }
         instance = null;
     }
 

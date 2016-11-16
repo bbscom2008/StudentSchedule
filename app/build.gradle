@@ -13,8 +13,8 @@ android {
         applicationId "zz.itcast.studentschedule"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 6
-        versionName "2.0新课表改版_6"
+        versionCode 7
+        versionName "2.0新课表改版_7"
     }
 
     buildTypes {
